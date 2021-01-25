@@ -24,8 +24,23 @@
     drawing = true;
     current.x = e.clientX;
     current.y = e.clientY;
+    console.log("hello  comp= ", current);
+    
   });
   canvas.addEventListener("mouseup", () => { drawing = false; });
+  
+  // for mobile devices
+  canvas.addEventListener("touchstart", (e) => {
+    console.log(e);
+    drawing = true;
+    current.x = e.clientX || e.targetTouches[0].clientX;
+    current.y = e.clientY || e.targetTouches[0].clientY;
+    console.log(current);
+  });
+  canvas.addEventListener("touchend", () => { drawing = false; });
+  
+  
+  
 
   socket.on("message" , (data) => {
     console.log(data);
@@ -51,8 +66,17 @@
       current.x = e.clientX;
       current.y = e.clientY;
     }
-    
   });
+  
+  canvas.addEventListener("touchmove", (e) => {
+    if(drawing){
+      drawLine(current.x, current.y, e.clientX || e.targetTouches[0].clientX, e.clientY || e.targetTouches[0].clientY, current.color);
+      socket.emit("drawing", current.x, current.y, e.clientX || e.targetTouches[0].clientX, e.clientY || e.targetTouches[0].clientY, current.color);
+      current.x = e.clientX || e.targetTouches[0].clientX;
+      current.y = e.clientY || e.targetTouches[0].clientY;
+    }
+  });
+  
 </script>
 </body>
 </html>
