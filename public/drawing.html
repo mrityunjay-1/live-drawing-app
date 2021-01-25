@@ -2,12 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title> tic tac toe </title>
+  <title> Drawing App </title>
 <style>
   * {margin: 0; padding: 0; box-sizing: border-box;}
   body{font-family: 'helvetica'}
   #alerter{
     display: none;
+  }
+  .span-1{
+    padding: 2% 15%; height: 35px; box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;
   }
 </style>
 </head>
@@ -21,21 +24,35 @@
   <div style="display: flex; justify-content: space-between;">
     <div style="max-width: 1202px;"><canvas id="canvasTag" width="1200" height="660" style="border: 1px solid grey;box-shadow: 2px 0.5px 5px lightgrey;"></canvas></div>
     <div style="display: flex; flex-flow: column;box-shadow: 1px 5px 5px rgb(92, 82, 82); padding: 2%; min-width: 150px;background-color: white">
-      <span onclick="change_color('red')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: red; color: white; padding: 2% 15%; height: 35px;"> red </span>
-      <span onclick="change_color('blue')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: blue; color: white; padding: 2% 15%; height: 35px;"> blue </span>
-      <span onclick="change_color('green')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: green; color: white; padding: 2% 15%; height: 35px;"> green </span>
-      <span onclick="change_color('magenta')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: magenta; color: white; padding: 2% 15%; height: 35px;"> magenta </span>
-      <span onclick="change_color('black')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: black; color: white; padding: 2% 15%; height: 35px;"> black </span>
-      <span onclick="change_color('yellow')" style="box-shadow: 2px 2px 5px orange;display: grid; place-items: center;cursor: pointer; margin: 8% 0%; text-align: center;text-decoration: none; border-radius: 5px;background-color: yellow; color: black; padding: 2% 15%; height: 35px;"> yellow </span>
+      <span class="span-1" onclick="change_color('red')" style="background-color: red; color: white; "> red </span>
+      <span class="span-1" onclick="change_color('blue')" style="background-color: blue; color: white; "> blue </span>
+      <span class="span-1" onclick="change_color('green')" style="background-color: green; color: white; "> green </span>
+      <span class="span-1" onclick="change_color('magenta')" style="background-color: magenta; color: white; "> magenta </span>
+      <span class="span-1" onclick="change_color('black')" style="background-color: black; color: white; "> black </span>
+      <span class="span-1" onclick="change_color('yellow')" style="background-color: yellow;  "> yellow </span>
       <br /><br /><br /><br /><br /><br />
       
       <a href="" style="text-align: center;text-decoration: none; border-radius: 5px;background-color: blue; color: white; padding: 10% 15%;"> wipe all </a>
     </div>
   </div>
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
 <script src="socket.io/socket.io.js"></script>
+<script src="js/maintain_user.js"></script>
 <script>
   let socket = io();
+  
+  
+  const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+  // console.log({ username, room });
+
+  socket.emit("join", { username, room });
+  socket.on("welcome_message", (data) => console.log(data));
+  
+  
+  
+  
+  
   let canvas = document.querySelector("#canvasTag");
   let ctx = canvas.getContext("2d");
   let drawing = false;
@@ -61,7 +78,7 @@
   
   // for mobile devices
   canvas.addEventListener("touchstart", (e) => {
-    console.log(e);
+    // console.log(e);
     drawing = true;
     current.x = e.clientX || e.targetTouches[0].clientX;
     current.y = e.clientY || e.targetTouches[0].clientY;
@@ -75,8 +92,7 @@
   socket.on("drawingnew", (x0, y0, x1, y1, color) => { drawLine(x0, y0, x1, y1, color); });
   
   function drawLine(x0, y0, x1, y1, color) {
-    
-    console.log(x0, y0, x1, y1, color);
+    // console.log(x0, y0, x1, y1, color);
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
