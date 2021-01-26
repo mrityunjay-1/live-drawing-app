@@ -35,14 +35,17 @@
       <a href="" style="text-align: center;text-decoration: none; border-radius: 5px;background-color: blue; color: white; padding: 10% 15%;"> wipe all </a>
     </div>
   </div>
+  <h1> users present in the room. </h1>
+  <div id="user-list">
+    
+  </div>
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
 <script src="socket.io/socket.io.js"></script>
 <script src="js/maintain_user.js"></script>
 <script>
   let socket = io();
-  
-  
+
   const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
   // console.log({ username, room });
 
@@ -55,6 +58,14 @@
     setTimeout(() => {
       document.querySelector("#alerter").style.display= "none";
     }, 500);
+   });
+   
+   socket.on("users-list", (usersList) => {
+     let list1 = ``;
+     usersList.forEach((user) => {
+       list1 += `<h3> ${user.username} </h3> <br />`;
+     });
+     document.querySelector("#user-list").innerHTML = list1;
    });
   
   

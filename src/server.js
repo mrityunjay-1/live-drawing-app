@@ -42,6 +42,8 @@ io.on("connection", (socket) => {
     // giving an information to the user.
     socket.broadcast.to(room).emit("user-joined", `<span style="color: white; "> ${username} </span> joined the room`);
 
+    // console.log(getUsersInTheRoom(room));
+    io.to(room).emit("users-list", getUsersInTheRoom(room));
   });
 
 
@@ -63,7 +65,10 @@ io.on("connection", (socket) => {
     const user = removeUser(socket.id);
     // console.log("removed User  = ", user);
 
-  })
+    // notifying other users that a user has left the room
+    socket.broadcast.to(user.room).emit("user-joined", `${user.username} left the room.`);
+    io.to(user.room).emit("users-list", getUsersInTheRoom(user.room));
+  });
 
 });
 
