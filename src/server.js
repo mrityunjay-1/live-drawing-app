@@ -37,6 +37,11 @@ io.on("connection", (socket) => {
 
     // just for checking
     // console.log(users);
+
+
+    // giving an information to the user.
+    socket.broadcast.to(room).emit("user-joined", `<span style="color: white; "> ${username} </span> joined the room`);
+
   });
 
 
@@ -56,7 +61,7 @@ io.on("connection", (socket) => {
 
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
-    console.log("removed User  = ", user);
+    // console.log("removed User  = ", user);
 
   })
 
